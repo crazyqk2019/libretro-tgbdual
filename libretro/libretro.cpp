@@ -1,4 +1,4 @@
-#ifndef _GNU_SOURCE
+﻿#ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1 // for fopencookie hack in serialize_size
 #endif
 
@@ -17,16 +17,16 @@
 #define RETRO_GAME_TYPE_GAMEBOY_LINK_2P 0x101
 
 static const struct retro_variable vars_single[] = {
-    { "tgbdual_gblink_enable", "Link cable emulation (reload); disabled|enabled" },
+    { "tgbdual_gblink_enable", "联机线模拟（须重启）; disabled|enabled" },
     { NULL, NULL },
 };
 
 static const struct retro_variable vars_dual[] = {
-    { "tgbdual_gblink_enable", "Link cable emulation (reload); disabled|enabled" },
-    { "tgbdual_screen_placement", "Screen layout; left-right|top-down" },
-    { "tgbdual_switch_screens", "Switch player screens; normal|switched" },
-    { "tgbdual_single_screen_mp", "Show player screens; both players|player 1 only|player 2 only" },
-    { "tgbdual_audio_output", "Audio output; Game Boy #1|Game Boy #2" },
+    { "tgbdual_gblink_enable", "联机线模拟（须重启）; disabled|enabled" },
+    { "tgbdual_screen_placement", "屏幕布局; 左右|上下" },
+    { "tgbdual_switch_screens", "交换玩家屏幕; 正常|交换" },
+    { "tgbdual_single_screen_mp", "显示玩家屏幕; 同时显示|仅显示玩家1|仅显示玩家2" },
+    { "tgbdual_audio_output", "音频输出; Game Boy #1|Game Boy #2" },
     { NULL, NULL },
 };
 
@@ -155,9 +155,9 @@ static void check_variables(void)
    var.value = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
-      if (!strcmp(var.value, "left-right"))
+      if (!strcmp(var.value, "左右"))
          _screen_2p_vertical = false;
-      else if (!strcmp(var.value, "top-down"))
+      else if (!strcmp(var.value, "上下"))
          _screen_2p_vertical = true;
    }
    else
@@ -168,9 +168,9 @@ static void check_variables(void)
    var.value = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
-      if (!strcmp(var.value, "normal"))
+      if (!strcmp(var.value, "正常"))
          _screen_switched = false;
-      else if (!strcmp(var.value, "switched"))
+      else if (!strcmp(var.value, "交换"))
          _screen_switched = true;
    }
    else
@@ -181,11 +181,11 @@ static void check_variables(void)
    var.value = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
-      if (!strcmp(var.value, "both players"))
+      if (!strcmp(var.value, "同时显示"))
          _show_player_screens = 2;
-      else if (!strcmp(var.value, "player 1 only"))
+      else if (!strcmp(var.value, "仅显示玩家1"))
          _show_player_screens = 0;
-      else if (!strcmp(var.value, "player 2 only"))
+      else if (!strcmp(var.value, "仅显示玩家2"))
          _show_player_screens = 1;
    }
    else
@@ -229,23 +229,23 @@ bool retro_load_game(const struct retro_game_info *info)
    unsigned i;
 
    struct retro_input_descriptor desc[] = {
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "D-Pad Down" },
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "D-Pad Right" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "左" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "上" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "下" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "右" },
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,     "B" },
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,     "A" },
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
-      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START, "Start" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "选择" },
+      { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START, "开始" },
 
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "D-Pad Down" },
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "D-Pad Right" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "左" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "上" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,  "下" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "右" },
       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,     "B" },
       { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,     "A" },
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START, "Start" },
-      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START, "开始" },
+      { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "选择" },
 
       { 0 },
    };
