@@ -23,7 +23,7 @@
 
 #include "gb.h"
 
-#define ROL_BYTE(var, bits) (var = ((var) & (-1 << 8)) \
+#define ROL_BYTE(var, bits) (var = ((var) & (-1U << 8)) \
                              | (((var)<<(bits))&0xff) \
                              | ((var) >> (8-(bits))))
 
@@ -65,11 +65,11 @@ void lcd::reset()
 void lcd::bg_render(void *buf,int scanline)
 {
 	int i,x,y;
-   int start, end, y_and_7, y_div_8, prefix = 0;
+   int start, y_div_8, prefix = 0;
    byte *trans, *now_tile;
 	dword tmp_dat, calc1, calc2;
    word back, pat, *dat;
-   word *now_share, *now_pat, *now_share2, *now_pat2;
+   word *now_share, *now_pat;
    byte *vrams[2];
 	word share  = 0x0000;//prefix
 	word pal[4];
@@ -107,8 +107,6 @@ void lcd::bg_render(void *buf,int scanline)
 
 
 	start=ref_gb->get_regs()->SCX>>3;
-	end=(start+20>32)?32:(start+21);
-	y_and_7=y&7;
 	y_div_8=y>>3;
 
 
@@ -116,8 +114,6 @@ void lcd::bg_render(void *buf,int scanline)
 	now_tile=vrams[0]+back+((y_div_8)<<5)+start;
 	now_share=(word*)(vrams[0]+share+((y&7)<<1));
 	now_pat=(word*)(vrams[0]+pat+((y&7)<<1));
-	now_share2=(word*)(vrams[0]+share+14-((y&7)<<1));
-	now_pat2=(word*)(vrams[0]+pat+14-((y&7)<<1));
 
 	tile=*(now_tile++);
 	tmp_dat=(tile&0x80)?*(now_share+(tile<<3)):*(now_pat+(tile<<3));
@@ -153,9 +149,10 @@ void lcd::bg_render(void *buf,int scanline)
 	dat   -= 8;
 	trans -= 8;
 
-	for (i=0;i<8-(x&7);i++){ // スクロール補正
-		*(dat++)=*(dat+(x&7));
-		*(trans++)=*(dat+(x&7));
+	for (i=0;i<8-(x&7);i++){ // スクロール補正 // Scroll correction
+		*(dat)=*(dat+(x&7));
+		*(trans)=*(dat+(x&7));
+		dat++; trans++;
 	}
 
 	for (i=0;i<20;i++){
@@ -418,8 +415,6 @@ void lcd::bg_render_color(void *buf,int scanline)
 	dat=((word*)buf)+scanline*160;
 
 	int start=ref_gb->get_regs()->SCX>>3;
-	int end=(start+20>32)?32:(start+21);
-	int y_and_7=y&7;
 	int y_div_8=y>>3;
 	int prefix=0;
 	byte *now_tile=vrams[0]+back+((y_div_8)<<5)+start;
@@ -485,10 +480,11 @@ void lcd::bg_render_color(void *buf,int scanline)
 	trans-=8;
 	priority-=8;
 
-	for (i=0;i<8-(x&7);i++){ // スクロール補正
-		*(dat++)=*(dat+(x&7));
-		*(trans++)=*(trans+(x&7));
-		*(priority++)=*(priority+(x&7));
+	for (i=0;i<8-(x&7);i++){ // スクロール補正 // Scroll correction
+		*(dat)=*(dat+(x&7));
+		*(trans)=*(trans+(x&7));
+		*(priority)=*(priority+(x&7));
+		dat++; trans++; priority++;
 	}
 
 	for (i=0;i<20;i++){

@@ -186,10 +186,6 @@ byte mbc::ext_read(word adr)
 
 void mbc::ext_write(word adr,byte dat)
 {
-	//char op_name[][20]={"プリフィックス","書込み","読込み","消去"};
-	//char pre_op_name[][20]={"書込み消去禁止","全アドレス書込み","全アドレス消去","書込み消去許可"};
-	char op_name[][20]={"prefix","write","read","erase"};
-	char pre_op_name[][20]={"Write-erase denied","Write all addresses","Erase all addresses","Allow write erase"};
 	int i;
 
 	switch(ref_gb->get_rom()->get_info()->cart_type){
@@ -269,8 +265,6 @@ void mbc::ext_write(word adr,byte dat)
 							mbc7_state=2;
 							mbc7_count=0;
 							mbc7_op_code=mbc7_buf&3;
-////							fprintf(file,"コマンド:%s ステート:アドレス受信\n",op_name[mbc7_op_code]);
-//							fprintf(file,"Command: %s state: Address received\n",op_name[mbc7_op_code]);
 						}
 						break;
 					case 2: // アドレス受信 // Address received
@@ -294,8 +288,6 @@ void mbc::ext_write(word adr,byte dat)
 									mbc7_write_enable=true;
 									mbc7_state=0;
 								}
-////								fprintf(file,"プリフィックスオペコード:%s ステート:データ受信\n",pre_op_name[mbc7_adr>>6]);
-//								fprintf(file,"Opcode prefix: %s state: Data reception\n",pre_op_name[mbc7_adr>>6]);
 							}
 							else{
 ////								fprintf(file,"アドレス:%02X ステート:データ受信\n",mbc7_adr);
@@ -767,7 +759,7 @@ void mbc::mmm01_write(word adr,byte dat)
 		case 0:
 			break;
 		case 1:
-			rom_page=ref_gb->get_rom()->get_rom()+0x4000*((dat&3)*0x10+(dat==0?1:dat)&0x0f&(rom_size_tbl[ref_gb->get_rom()->get_info()->rom_size]-1))-0x4000;
+			rom_page=ref_gb->get_rom()->get_rom()+0x4000*(((dat&3)*0x10+(dat==0?1:dat))&0x0f&(rom_size_tbl[ref_gb->get_rom()->get_info()->rom_size]-1))-0x4000;
 			break;
 		case 2:
 			ref_gb->get_rom()->set_first((dat&3)*0x10);
